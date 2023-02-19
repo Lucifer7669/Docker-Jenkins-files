@@ -1,0 +1,46 @@
+pipeline {
+    agent {
+        node {
+            label "built-in"
+            customWorkspace "/mnt/docker-pipelines"
+        }
+    }
+
+    stages {
+        stage ('start-docker-engine-phase-2') {
+            steps {
+                sh "docker system prune -a -f"
+            }
+        }
+        stage ('creating-docker-httpd-containers-phase-3') {
+               steps {
+                sh "docker run -itdp 80:80 --name server-1 httpd"
+                 sh "docker run -itdp 81:80 --name server-2 httpd"
+                  sh "docker run -itdp 82:80 --name server-3 httpd"
+                   sh "docker run -itdp 83:80 --name server-4 httpd"
+               }
+        }
+
+        stage ('git-cloneing-phase-4') {
+            steps {
+                sh "mkdir 23Q1"
+                sh "cd 23Q1 && git clone https://github.com/Lucifer7669/docker-httpd-deployment.git -b 23Q1"
+                sh "mkdir 23Q2"
+                sh "cd 23Q2 && git clone https://github.com/Lucifer7669/docker-httpd-deployment.git -b 23Q2"
+                sh "mkdir 23Q3"
+                sh "cd 23Q3 && git clone https://github.com/Lucifer7669/docker-httpd-deployment.git -b 23Q3"
+                sh "mkdir 23Q4"
+                sh "cd 23Q4 && git clone https://github.com/Lucifer7669/docker-httpd-deployment.git -b 23Q4"
+            }
+        }
+
+        stage ('deploying-files-to-docker-container-phase-5') {
+           steps {
+            sh "docker cp 23Q1/docker-httpd-deployment/index.html server-1://usr/local/apache2/htdocs"
+            sh "docker cp 23Q2/docker-httpd-deployment/index.html server-2://usr/local/apache2/htdocs/"
+            sh "docker cp 23Q3/docker-httpd-deployment/index.html server-3://usr/local/apache2/htdocs/"
+            sh "docker cp 23Q4/docker-httpd-deployment/index.html server-4://usr/local/apache2/htdocs/"
+           }
+        }
+    }
+}
