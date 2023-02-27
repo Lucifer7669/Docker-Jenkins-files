@@ -7,4 +7,4 @@ services :
    ports :
      - 80:80 
    volumes:
-     - '/srv/docker-compose-jenkins-pipeline/source-code:/var/www/html'
+     - '/srv/docker-compose-jenkins-pipeline/source-code/index.html:/var/www/html'
